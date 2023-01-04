@@ -113,6 +113,16 @@ Resources:
   # |  __/| | |_) |  __| | | | | |  __/
   # |_|   |_| .__/ \___|_|_|_| |_|\___|
   #         |_|
+
+  CodeCommitBranch:
+    Type: String
+    Description: branch name
+    Default: master
+    AllowedValues:
+      - main
+      - dev
+      - master
+
   Pipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
@@ -133,7 +143,7 @@ Resources:
               Configuration:
                 ConnectionArn: !If [CreateConnection, !Ref CodeStarConnection, !Ref CodeStarConnectionArn]
                 FullRepositoryId: !Ref FullRepositoryId
-                BranchName: !If [IsFeatureBranchPipeline, !Ref FeatureGitBranch, !Ref MainGitBranch]
+                BranchName: !If [IsFeatureBranchPipeline, !Ref FeatureGitBranch, !Ref MainGitBranch,!Ref CodeCommitBranch]
               OutputArtifacts:
                 - Name: SourceCodeAsZip
               RunOrder: 1

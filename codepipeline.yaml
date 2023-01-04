@@ -89,6 +89,14 @@ Parameters:
     Type: String
     Default: ""
 
+  CodeCommitBranch:
+    Type: String
+    Description: branch name
+    Default: master
+    AllowedValues:
+      - dev
+      - main
+
 Conditions:
   IsMainBranchPipeline: !Equals [!Ref FeatureGitBranch, ""]
   IsFeatureBranchPipeline: !Not [Condition: IsMainBranchPipeline]
@@ -133,7 +141,7 @@ Resources:
               Configuration:
                 ConnectionArn: !If [CreateConnection, !Ref CodeStarConnection, !Ref CodeStarConnectionArn]
                 FullRepositoryId: !Ref FullRepositoryId
-                BranchName: !If [IsFeatureBranchPipeline, !Ref FeatureGitBranch, !Ref MainGitBranch]
+                BranchName: !If [IsFeatureBranchPipeline, !Ref FeatureGitBranch, !Ref MainGitBranch,!Ref CodeCommitBranch]
               OutputArtifacts:
                 - Name: SourceCodeAsZip
               RunOrder: 1
